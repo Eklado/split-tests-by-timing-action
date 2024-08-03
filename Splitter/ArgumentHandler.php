@@ -74,4 +74,9 @@ class ArgumentHandler
     {
         return (bool)getenv('INPUT_DEBUG');
     }
+
+    public function getBasePath(): string
+    {
+        return getenv('BASE_PATH');
+    }
 }
