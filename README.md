@@ -64,6 +64,10 @@ on: [push]
 jobs:
   split-tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     steps:
       - name: Checkout code
@@ -77,6 +81,15 @@ jobs:
       - name: Install dependencies
         run: composer install
 
+      - uses: dawidd6/action-download-artifact@v6
+        with:
+          name: phpunit-reports
+          path: '/tmp/junit_xml_download_dir'
+        continue-on-error: true
+
+      - name: Create required directories
+        run: mkdir -p /tmp/xml_partial_dir /tmp/junit_xml_download_dir
+
       - name: Create partial PHPUnit XML files
         uses: Eklado/split-tests-by-timing-action@v1
         with:
@@ -85,6 +98,34 @@ jobs:
           node-index: 0
           xml-partial-dir: '/tmp/xml_partial_dir'
           debug: 'false'
+
+      - name: Execute tests
+        run: php artisan test --log-junit /tmp/reports/junit-${{ matrix.node_index }}.xml --configuration /tmp/xml_partial_dir/phpunit-partial-${{ matrix.node_index }}.xml
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: junit-${{ matrix.node_index }}
+          path: /tmp/reports/junit-${{ matrix.node_index }}.xml
+          overwrite: true
+          retention-days: 1
+
+  upload_test_artifact:
+    needs: reports_tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: junit-*
+          path: '/tmp/reports'
+          merge-multiple: true
+
+      - run: ls -R /tmp/reports
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-reports
+          path: '/tmp/reports'
+          overwrite: true
 ```
 
 ## How It Works
