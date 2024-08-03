@@ -1,6 +1,6 @@
 <?php
 
-namespace Github\Splitter;
+namespace Splitter;
 
 use DOMDocument;
 
