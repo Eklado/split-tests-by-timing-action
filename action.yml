@@ -21,5 +21,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - env:
+        INPUT_XML_PARTIAL_DIR: ${{ inputs.xml-partial-dir }}
+        INPUT_NODE_INDEX: ${{ inputs.node-index }}
+        INPUT_NODE_TOTAL: ${{ inputs.node-total }}
+        INPUT_JUNIT_XML_REPORT_DIR: ${{ inputs.junit-xml-report-dir }}
+        INPUT_DEBUG: ${{ inputs.debug }}
     - run: php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
