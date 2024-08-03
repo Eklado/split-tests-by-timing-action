@@ -1,0 +1,20 @@
+name: 'Split PHP tests by timing'
+description: 'A custom PHP action to split PHP tests by timing'
+inputs:
+  junit-xml-report-dir:
+    description: 'The directory path where the last test junit reports exist.'
+    required: true
+  node-total:
+    description: 'The total number of the expected parallel nodes.'
+    required: true
+  node-index:
+    description: 'The index of the current node.'
+    required: false
+    default: null
+  xml-partial-dir:
+    description: 'The directory path where the partial phpunit xml files will be placed.'
+    required: true
+runs:
+  using: 'docker'
+  image: 'docker://php:7.4-cli'
+  entrypoint: ['php', '/phpunit-xml-splitter.php']
