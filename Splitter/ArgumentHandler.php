@@ -6,13 +6,7 @@ use InvalidArgumentException;
 
 class ArgumentHandler
 {
-    private array $arguments;
     private string $baseRoute = '/';
-
-    public function __construct(array $arguments)
-    {
-        $this->arguments = $arguments;
-    }
 
     public function getXmlPartialDir(): string
     {
