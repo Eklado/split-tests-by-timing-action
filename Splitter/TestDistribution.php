@@ -48,7 +48,7 @@ class TestDistribution
 
     private function getTestFiles(string $directoryName): array
     {
-        $directory = new \RecursiveDirectoryIterator(__DIR__ . '/../../tests/' . $directoryName);
+        $directory = new \RecursiveDirectoryIterator('tests/' . $directoryName);
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = [];
 
@@ -100,7 +100,7 @@ class TestDistribution
         // load current phpunit.xml file to add the test files to it
         // to apply any new updates made in the original phpunit.xml file into the new partial file
         $xml = new DOMDocument();
-        $xml->load(__DIR__ . '/../../phpunit.xml');
+        $xml->load('phpunit.xml');
 
         $testsuite = $xml->createElement('testsuite');
         $testsuite->setAttribute('name', 'partial');
@@ -130,7 +130,7 @@ class TestDistribution
         // replace the original "testsuites" and place the new partial one
         $phpunit = $xml->getElementsByTagName('phpunit')->item(0);
 
-        $bootstrap = __DIR__ . '/../../' . $phpunit->getAttribute('bootstrap');
+        $bootstrap = $phpunit->getAttribute('bootstrap');
         $phpunit->setAttribute('bootstrap', $bootstrap);
 
         $phpunit->replaceChild($testsuites, $phpunit->getElementsByTagName('testsuites')->item(0));
