@@ -27,5 +27,6 @@ runs:
         INPUT_NODE_TOTAL: ${{ inputs.node-total }}
         INPUT_JUNIT_XML_REPORT_DIR: ${{ inputs.junit-xml-report-dir }}
         INPUT_DEBUG: ${{ inputs.debug }}
+        BASE_PATH: ${{ github.workspace }}
       run: php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
