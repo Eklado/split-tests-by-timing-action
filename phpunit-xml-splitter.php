@@ -1,14 +1,12 @@
 <?php
 
-namespace Github;
-
 require_once __DIR__.'/Splitter/ArgumentHandler.php';
 require_once __DIR__.'/Splitter/XMLHandler.php';
 require_once __DIR__.'/Splitter/TestDistribution.php';
 
-use Github\Splitter\ArgumentHandler;
-use Github\Splitter\TestDistribution;
-use Github\Splitter\XMLHandler;
+use Splitter\ArgumentHandler;
+use Splitter\TestDistribution;
+use Splitter\XMLHandler;
 
 // Parse command-line arguments
 $argumentHandler = new ArgumentHandler($argv);
