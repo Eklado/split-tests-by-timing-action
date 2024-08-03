@@ -19,6 +19,9 @@ inputs:
     required: false
     default: false
 runs:
-  using: 'docker'
-  image: 'docker://php:7.4-cli'
-  entrypoint: ['php', '/phpunit-xml-splitter.php']
+  using: "composite"
+    steps:
+      - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+        shell: bash
+      - run: php ./phpunit-xml-splitter.php
+        shell: bash
