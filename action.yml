@@ -19,5 +19,7 @@ inputs:
     required: false
     default: false
 runs:
-  using: "php"
-  main: "phpunit-xml-splitter.php"
+  using: "composite"
+  steps:
+    - run: php ${{ github.action_path }}/phpunit-xml-splitter.php
+      shell: bash
