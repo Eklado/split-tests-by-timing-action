@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class ArgumentHandler
 {
     private array $arguments;
-    private string $baseRoute = '/github/workspace/';
+    private string $baseRoute = '/';
 
     public function __construct(array $arguments)
     {
