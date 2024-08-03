@@ -7,6 +7,7 @@ use InvalidArgumentException;
 class ArgumentHandler
 {
     private array $arguments;
+    private string $baseRoute = '/github/workspace';
 
     public function __construct(array $arguments)
     {
@@ -18,8 +19,10 @@ class ArgumentHandler
         $xmlPartialDir = getenv('xml-partial-dir');
 
         if (isset($xmlPartialDir)) {
-            if (is_dir($xmlPartialDir)) {
-                return $xmlPartialDir;
+            $dirName = $baseRoute . $xmlPartialDir;
+
+            if (is_dir($dirName)) {
+                return $dirName;
             }
 
             throw new InvalidArgumentException("Directory ($dirName) not found, please create it first");
@@ -55,14 +58,16 @@ class ArgumentHandler
         $junitXmlReportDir = getenv('junit-xml-report-dir');
 
         if (isset($junitXmlReportDir)) {
-            if (is_dir($junitXmlReportDir)) {
-                return $junitXmlReportDir;
+            $dirName = $baseRoute . $junitXmlReportDir;
+
+            if (is_dir($dirName)) {
+                return $dirName;
             }
 
             throw new InvalidArgumentException("Directory ($dirName) not found, please create it first");
         }
 
-        throw new InvalidArgumentException("Missing required argument --junit-xml-report-dir");
+        throw new InvalidArgumentException("Missing required argument `junit-xml-report-dir`");
     }
 
     public function hasDebugFlag(): bool
