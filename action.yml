@@ -14,6 +14,10 @@ inputs:
   xml-partial-dir:
     description: 'The directory path where the partial phpunit xml files will be placed.'
     required: true
+  debug:
+    description: 'Debug option to echo some data that enables following up the flow.'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'docker://php:7.4-cli'
