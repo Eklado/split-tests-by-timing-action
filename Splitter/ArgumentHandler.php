@@ -16,7 +16,7 @@ class ArgumentHandler
 
     public function getXmlPartialDir(): string
     {
-        $xmlPartialDir = getenv('xml-partial-dir');
+        $xmlPartialDir = getenv('INPUT_XML_PARTIAL_DIR');
 
         if (isset($xmlPartialDir)) {
             $dirName = $this->baseRoute . ltrim($xmlPartialDir, '/');
@@ -33,7 +33,7 @@ class ArgumentHandler
 
     public function getNodeIndex(): ?int
     {
-        $nodeIndex = getenv('node-index');
+        $nodeIndex = getenv('INPUT_NODE_INDEX');
 
         if (isset($nodeIndex)) {
             return (int)$nodeIndex;
@@ -44,7 +44,7 @@ class ArgumentHandler
 
     public function getNodeTotal(): int
     {
-        $nodeTotal = getenv('node-total');
+        $nodeTotal = getenv('INPUT_NODE_TOTAL');
 
         if (isset($nodeTotal)) {
             return (int)$nodeTotal;
@@ -55,7 +55,7 @@ class ArgumentHandler
 
     public function getJUnitXmlReportDir(): string
     {
-        $junitXmlReportDir = getenv('junit-xml-report-dir');
+        $junitXmlReportDir = getenv('INPUT_JUNIT_XML_REPORT_DIR');
 
         if (isset($junitXmlReportDir)) {
             $dirName = $this->baseRoute . ltrim($junitXmlReportDir, '/');
@@ -72,6 +72,6 @@ class ArgumentHandler
 
     public function hasDebugFlag(): bool
     {
-        return (bool)getenv('debug');
+        return (bool)getenv('INPUT_DEBUG');
     }
 }
