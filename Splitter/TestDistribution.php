@@ -130,7 +130,7 @@ class TestDistribution
         // replace the original "testsuites" and place the new partial one
         $phpunit = $xml->getElementsByTagName('phpunit')->item(0);
 
-        $bootstrap = '~/' . $phpunit->getAttribute('bootstrap');
+        $bootstrap = $this->argumentHandler->getBasePath() . '/' . $phpunit->getAttribute('bootstrap');
         $phpunit->setAttribute('bootstrap', $bootstrap);
 
         $phpunit->replaceChild($testsuites, $phpunit->getElementsByTagName('testsuites')->item(0));
