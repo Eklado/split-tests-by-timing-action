@@ -19,7 +19,7 @@ class ArgumentHandler
         $xmlPartialDir = getenv('xml-partial-dir');
 
         if (isset($xmlPartialDir)) {
-            $dirName = $baseRoute . $xmlPartialDir;
+            $dirName = $this->baseRoute . $xmlPartialDir;
 
             if (is_dir($dirName)) {
                 return $dirName;
@@ -58,7 +58,7 @@ class ArgumentHandler
         $junitXmlReportDir = getenv('junit-xml-report-dir');
 
         if (isset($junitXmlReportDir)) {
-            $dirName = $baseRoute . $junitXmlReportDir;
+            $dirName = $this->baseRoute . $junitXmlReportDir;
 
             if (is_dir($dirName)) {
                 return $dirName;
