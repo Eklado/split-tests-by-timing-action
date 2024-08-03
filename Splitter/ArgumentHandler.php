@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class ArgumentHandler
 {
     private array $arguments;
-    private string $baseRoute = '/github/workspace';
+    private string $baseRoute = '/github/workspace/';
 
     public function __construct(array $arguments)
     {
@@ -19,7 +19,7 @@ class ArgumentHandler
         $xmlPartialDir = getenv('xml-partial-dir');
 
         if (isset($xmlPartialDir)) {
-            $dirName = $this->baseRoute . $xmlPartialDir;
+            $dirName = $this->baseRoute . ltrim($xmlPartialDir, '/');
 
             if (is_dir($dirName)) {
                 return $dirName;
@@ -58,7 +58,7 @@ class ArgumentHandler
         $junitXmlReportDir = getenv('junit-xml-report-dir');
 
         if (isset($junitXmlReportDir)) {
-            $dirName = $this->baseRoute . $junitXmlReportDir;
+            $dirName = $this->baseRoute . ltrim($junitXmlReportDir, '/');
 
             if (is_dir($dirName)) {
                 return $dirName;
