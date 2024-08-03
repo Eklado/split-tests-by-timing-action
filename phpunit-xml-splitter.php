@@ -9,7 +9,7 @@ use Splitter\TestDistribution;
 use Splitter\XMLHandler;
 
 // Parse command-line arguments
-$argumentHandler = new ArgumentHandler($argv);
+$argumentHandler = new ArgumentHandler();
 
 // Initialize XML handler
 $junitXmlReportDir = $argumentHandler->getJUnitXmlReportDir();
