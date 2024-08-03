@@ -21,7 +21,5 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ls -alh
-      shell: bash
-    - run: php /phpunit-xml-splitter.php
+    - run: php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
