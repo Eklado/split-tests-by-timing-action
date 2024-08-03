@@ -66,7 +66,7 @@ class ArgumentHandler
 
     public function hasDebugFlag(): bool
     {
-        return (bool)getenv('INPUT_DEBUG');
+        return getenv('INPUT_DEBUG') == 'true';
     }
 
     public function getBasePath(): string
