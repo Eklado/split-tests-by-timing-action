@@ -20,8 +20,8 @@ inputs:
     default: false
 runs:
   using: "composite"
-    steps:
-      - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
-        shell: bash
-      - run: php ./phpunit-xml-splitter.php
-        shell: bash
+  steps:
+    - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
+      shell: bash
+    - run: php ./phpunit-xml-splitter.php
+      shell: bash
