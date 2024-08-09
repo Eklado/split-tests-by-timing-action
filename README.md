@@ -3,7 +3,7 @@
 ## Overview
 
 The **Split PHP Tests by Timing** action is a custom PHP action designed to split PHPUnit test files by timing.
-This action is optimized for use with the Laravel framework, handling tests located in both `tests/Unit` and `tests/Feature` directories.
+This action is optimized for use with the Laravel framework, handling tests located in both `tests/Unit` and `tests/Feature` directories by default.
 It is useful for optimizing test execution by distributing tests across multiple parallel nodes.
 
 ## Inputs
@@ -31,6 +31,12 @@ The action accepts the following inputs:
 - **Description**: The directory path where the partial PHPUnit XML files will be placed.
 - **Required**: `true`
 
+### `test-directories`
+
+- **Description**: List of comma separated test directories to use all test files inside it.
+- **Required**: `false`
+- **Default**: `tests/Feature,tests/Unit`
+
 ### `debug`
 
 - **Description**: Debug option to echo some data that enables following up the flow.
@@ -49,6 +55,7 @@ To use this action in your GitHub Actions workflow, add the following step to yo
     node-total: 10
     node-index: 0
     xml-partial-dir: '/tmp/xml_partial_dir'
+    test-directories: 'tests/Feature,tests/Unit'
     debug: 'false'
 ```
 
@@ -97,6 +104,7 @@ jobs:
           node-total: 10
           node-index: 0
           xml-partial-dir: '/tmp/xml_partial_dir'
+          test-directories: 'tests/Feature,tests/Unit'
           debug: 'false'
 
       - name: Execute tests
@@ -132,7 +140,7 @@ jobs:
 
 1. **Inputs**: The action takes directory paths, node information, and a debug flag as inputs.
 2. **Execution**: The action runs a PHP script (`phpunit-xml-splitter.php`) which performs the logic to split the PHPUnit XML files.
-3. **Laravel Compatibility**: This action is designed specifically to work with Laravel applications, handling test files located in both `tests/Unit` and `tests/Feature` directories.
+3. **Laravel Compatibility**: This action is designed to work with Laravel applications by default. To support test directories other than `tests/Unit` and `tests/Feature` directories, include it to the `test-directories` parameter.
 4. **Debugging**: If the `debug` input is set to `'true'`, additional debugging information will be echoed.
 
 ## Troubleshooting
