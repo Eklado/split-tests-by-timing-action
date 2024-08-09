@@ -64,6 +64,11 @@ class ArgumentHandler
         throw new InvalidArgumentException("Missing required argument `junit-xml-report-dir`");
     }
 
+    public function getTestDirectories(): array
+    {
+        return array_unique(preg_split('/\s*,\s*/', getenv('INPUT_TEST_DIRECTORIES')));
+    }
+
     public function hasDebugFlag(): bool
     {
         return getenv('INPUT_DEBUG') == 'true';
