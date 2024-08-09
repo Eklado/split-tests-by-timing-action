@@ -14,6 +14,10 @@ inputs:
   xml-partial-dir:
     description: 'The directory path where the partial phpunit xml files will be placed.'
     required: true
+  test-directories:
+    description: 'List of comma separated test directories to use all test files inside it.'
+    required: false
+    default: 'tests/Feature,tests/Unit'
   debug:
     description: 'Debug option to echo some data that enables following up the flow.'
     required: false
@@ -26,6 +30,7 @@ runs:
         INPUT_NODE_INDEX: ${{ inputs.node-index }}
         INPUT_NODE_TOTAL: ${{ inputs.node-total }}
         INPUT_JUNIT_XML_REPORT_DIR: ${{ inputs.junit-xml-report-dir }}
+        INPUT_TEST_DIRECTORIES: ${{ inputs.test-directories }}
         INPUT_DEBUG: ${{ inputs.debug }}
         BASE_PATH: ${{ github.workspace }}
       run: php ${{ github.action_path }}/phpunit-xml-splitter.php
