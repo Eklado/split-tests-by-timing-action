@@ -2,20 +2,20 @@
 
 namespace Splitter;
 
-use DOMDocument;
-
 class TestDistribution
 {
     private ArgumentHandler $argumentHandler;
     private XMLHandler $xmlHandler;
+    private string $routePrefix;
 
-    public function __construct(ArgumentHandler $argumentHandler, XMLHandler $xmlHandler)
+    public function __construct (ArgumentHandler $argumentHandler, XMLHandler $xmlHandler)
     {
         $this->argumentHandler = $argumentHandler;
         $this->xmlHandler = $xmlHandler;
+        $this->routePrefix = __DIR__ . '/../../';
     }
 
-    public function distributeTests(): void
+    public function distributeTests (): void
     {
         $testFileResults = $this->xmlHandler->getTestFileResults();
         $this->addNewTests($testFileResults);
@@ -34,29 +34,26 @@ class TestDistribution
         }
     }
 
-    private function addNewTests(array &$testFileResults): void
+    private function addNewTests (array &$testFileResults): void
     {
-        $testFiles = [];
+        $unitTests = $this->getTestFiles('Unit');
+        $featureTests = $this->getTestFiles('Feature');
 
-        foreach ($this->argumentHandler->getTestDirectories() as $directory) {
-            $testFiles = array_merge($testFiles, $this->getTestFiles($directory));
-        }
-
-        foreach ($testFiles as $testFile) {
+        foreach (array_merge($unitTests, $featureTests) as $testFile) {
             if (!isset($testFileResults[$testFile])) {
                 $testFileResults[$testFile] = 1;
             }
         }
     }
 
-    private function getTestFiles(string $directoryPath): array
+    private function getTestFiles (string $directoryName): array
     {
-        $directory = new \RecursiveDirectoryIterator($directoryPath);
+        $directory = new \RecursiveDirectoryIterator($this->routePrefix . 'tests/' . $directoryName);
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = [];
 
         foreach ($iterator as $info) {
-            if ($info->isFile()) {
+            if ($info->isFile() && $info->getExtension() === 'php') {
                 $files[] = $info->getRealPath();
             }
         }
@@ -64,7 +61,7 @@ class TestDistribution
         return $files;
     }
 
-    private function initializeNodes(int $nodeTotal): array
+    private function initializeNodes (int $nodeTotal): array
     {
         $nodes = [];
         for ($i = 0; $i < $nodeTotal; $i++) {
@@ -76,7 +73,7 @@ class TestDistribution
         return $nodes;
     }
 
-    private function assignTestsToNodes(array $testFileResults, array &$nodes): void
+    private function assignTestsToNodes (array $testFileResults, array &$nodes): void
     {
         foreach ($testFileResults as $filePath => $time) {
             $index = $this->findNodeWithLeastTime($nodes);
@@ -85,7 +82,7 @@ class TestDistribution
         }
     }
 
-    private function findNodeWithLeastTime(array $nodes): int
+    private function findNodeWithLeastTime (array $nodes): int
     {
         $index = 0;
         $minTime = PHP_INT_MAX;
@@ -98,15 +95,16 @@ class TestDistribution
         return $index;
     }
 
-    private function createNodePartialFile(array $nodes, int $nodeIndex): void
+    private function createNodePartialFile (array $nodes, int $nodeIndex): void
     {
         // load current phpunit.xml file to add the test files to it
         // to apply any new updates made in the original phpunit.xml file into the new partial file
-        $xml = new DOMDocument();
-        $xml->load('phpunit.xml');
+        $xml = simplexml_load_file($this->routePrefix . 'phpunit.xml');
 
-        $testsuite = $xml->createElement('testsuite');
-        $testsuite->setAttribute('name', 'partial');
+        unset($xml->testsuites);
+        $testsuites = $xml->addChild('testsuites');
+        $testsuite = $testsuites->addChild('testsuite');
+        $testsuite->addAttribute('name', 'partial');
 
         $debug = $this->argumentHandler->hasDebugFlag();
 
@@ -115,7 +113,7 @@ class TestDistribution
         }
 
         foreach ($nodes[$nodeIndex]['test_files'] as $index => $file) {
-            $testsuite->appendChild($xml->createElement('file', $file));
+            $testsuite->addChild('file', $file);
 
             if ($debug) {
                 echo "[DEBUG] $index -> $file" . PHP_EOL;
@@ -127,19 +125,43 @@ class TestDistribution
             echo '[DEBUG] Total recorded time: ' . $nodes[$nodeIndex]['recorded_total_time'] . PHP_EOL;
         }
 
-        $testsuites = $xml->createElement('testsuites');
-        $testsuites->appendChild($testsuite);
+        $this->convertRelativeToAbsolutePaths($xml);
 
-        // replace the original "testsuites" and place the new partial one
-        $phpunit = $xml->getElementsByTagName('phpunit')->item(0);
-
-        $bootstrap = $this->argumentHandler->getBasePath() . '/' . $phpunit->getAttribute('bootstrap');
-        $phpunit->setAttribute('bootstrap', $bootstrap);
-
-        $phpunit->replaceChild($testsuites, $phpunit->getElementsByTagName('testsuites')->item(0));
-
+        // Save the updated XML to a new file
         $xmlPartialDir = $this->argumentHandler->getXmlPartialDir();
+        $xml->asXML($xmlPartialDir . "/phpunit-partial-$nodeIndex.xml");
+    }
 
-        $xml->save($xmlPartialDir . "/phpunit-partial-$nodeIndex.xml");
+    /**
+     * Define a function to convert relative paths to absolute paths
+     *
+     * @param $element
+     *
+     * @return void
+     */
+    function convertRelativeToAbsolutePaths ($element): void
+    {
+        // Handle the 'bootstrap' attribute specifically (only this one needs path conversion)
+        if (isset($element['bootstrap'])) {
+            $relativePath = (string)$element['bootstrap'];
+            $absolutePath = realpath($this->routePrefix . $relativePath);
+            if ($absolutePath) {
+                $element['bootstrap'] = $absolutePath;
+            }
+        }
+
+        foreach ($element as $child) {
+            // If the child is a directory, file, or log target, convert the path
+            if (in_array($child->getName(), ['directory', 'file', 'log', 'bootstrap'])) {
+                $relativePath = (string)$child;
+                $absolutePath = realpath($this->routePrefix . $relativePath);
+                if ($absolutePath) {
+                    $child[0] = $absolutePath; // Replace the relative path with the absolute path
+                }
+            }
+
+            // Recursively check nested elements
+            $this->convertRelativeToAbsolutePaths($child);
+        }
     }
 }
