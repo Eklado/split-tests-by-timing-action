@@ -62,7 +62,7 @@ class TestDistribution
 
     private function getTestFiles (string $directoryName): array
     {
-        $directory = new \RecursiveDirectoryIterator($this->routePrefix . 'tests/' . $directoryName);
+        $directory = new \RecursiveDirectoryIterator($this->routePrefix . '/tests/' . $directoryName);
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = [];
 
