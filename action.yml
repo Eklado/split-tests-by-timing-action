@@ -33,7 +33,5 @@ runs:
         INPUT_TEST_DIRECTORIES: ${{ inputs.test-directories }}
         INPUT_DEBUG: ${{ inputs.debug }}
         BASE_PATH: ${{ github.workspace }}
-      run: |
-          php echo "version: 1.0.2"
-          php ${{ github.action_path }}/phpunit-xml-splitter.php
+      run: php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
