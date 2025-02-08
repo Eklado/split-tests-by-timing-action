@@ -8,7 +8,7 @@ use Splitter\ArgumentHandler;
 use Splitter\TestDistribution;
 use Splitter\XMLHandler;
 
-echo PHP_EOL . "version: " . getenv('ACTION_REF') . PHP_EOL . PHP_EOL;
+echo PHP_EOL . "version: 1.0.3" . PHP_EOL . PHP_EOL;
 
 // Parse command-line arguments
 $argumentHandler = new ArgumentHandler();

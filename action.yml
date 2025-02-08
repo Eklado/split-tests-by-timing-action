@@ -34,6 +34,5 @@ runs:
         INPUT_TEST_DIRECTORIES: ${{ inputs.test-directories }}
         INPUT_DEBUG: ${{ inputs.debug }}
         BASE_PATH: ${{ github.workspace }}
-        ACTION_REF: ${{ github.action_ref }}
       run: php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
