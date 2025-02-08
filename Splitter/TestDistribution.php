@@ -13,7 +13,7 @@ class TestDistribution
     {
         $this->argumentHandler = $argumentHandler;
         $this->xmlHandler = $xmlHandler;
-        $this->routePrefix = $argumentHandler->getBasePath();
+        $this->routePrefix = $argumentHandler->getBasePath() . '/';
         $this->debugEnabled = $argumentHandler->hasDebugFlag();
     }
 
@@ -62,7 +62,7 @@ class TestDistribution
 
     private function getTestFiles (string $directoryName): array
     {
-        $directory = new \RecursiveDirectoryIterator($this->routePrefix . '/tests/' . $directoryName);
+        $directory = new \RecursiveDirectoryIterator($this->routePrefix . 'tests/' . $directoryName);
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = [];
 
