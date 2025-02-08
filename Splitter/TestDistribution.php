@@ -7,17 +7,31 @@ class TestDistribution
     private ArgumentHandler $argumentHandler;
     private XMLHandler $xmlHandler;
     private string $routePrefix;
+    private bool $debugEnabled;
 
     public function __construct (ArgumentHandler $argumentHandler, XMLHandler $xmlHandler)
     {
         $this->argumentHandler = $argumentHandler;
         $this->xmlHandler = $xmlHandler;
-        $this->routePrefix = __DIR__ . '/../../';
+        $this->routePrefix = $argumentHandler->getBasePath();
+        $this->debugEnabled = $argumentHandler->hasDebugFlag();
     }
 
     public function distributeTests (): void
     {
         $testFileResults = $this->xmlHandler->getTestFileResults();
+        $fileResultsCount = count($testFileResults);
+
+        echo "[INFO] Total fetched file results: $fileResultsCount files" . PHP_EOL . PHP_EOL;
+
+        if ($this->debugEnabled && $fileResultsCount > 0) {
+            foreach ($testFileResults as $file => $time) {
+                echo "[DEBUG] $file -> took ($time) s" . PHP_EOL;
+            }
+
+            echo PHP_EOL . "------------------" . PHP_EOL . PHP_EOL;
+        }
+
         $this->addNewTests($testFileResults);
         $nodeTotal = $this->argumentHandler->getNodeTotal();
         $nodeIndex = $this->argumentHandler->getNodeIndex();
@@ -106,21 +120,19 @@ class TestDistribution
         $testsuite = $testsuites->addChild('testsuite');
         $testsuite->addAttribute('name', 'partial');
 
-        $debug = $this->argumentHandler->hasDebugFlag();
-
-        if ($debug) {
+        if ($this->debugEnabled) {
             echo '[DEBUG] Node index: ' . $nodeIndex . PHP_EOL;
         }
 
         foreach ($nodes[$nodeIndex]['test_files'] as $index => $file) {
             $testsuite->addChild('file', $file);
 
-            if ($debug) {
+            if ($this->debugEnabled) {
                 echo "[DEBUG] $index -> $file" . PHP_EOL;
             }
         }
 
-        if ($debug) {
+        if ($this->debugEnabled) {
             echo '[DEBUG] Total test files: ' . count($nodes[$nodeIndex]['test_files']) . PHP_EOL;
             echo '[DEBUG] Total recorded time: ' . $nodes[$nodeIndex]['recorded_total_time'] . PHP_EOL;
         }

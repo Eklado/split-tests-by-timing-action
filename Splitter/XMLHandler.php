@@ -15,7 +15,7 @@ class XMLHandler
 
     public function getTestFileResults(): array
     {
-        $xmlFiles = glob(__DIR__ . '/../' . $this->junitXmlReportDir . '/*.xml');
+        $xmlFiles = glob($this->junitXmlReportDir . '/*.xml');
         $testFileResults = [];
 
         foreach ($xmlFiles as $xmlFile) {
@@ -33,6 +33,10 @@ class XMLHandler
         $testSuites = $testResultXml->getElementsByTagName('testsuite');
 
         foreach ($testSuites as $testSuite) {
+            if (!$testSuite->hasAttribute('file')) {
+                continue;
+            }
+
             $file = $testSuite->getAttribute('file');
             $time = (float)$testSuite->getAttribute('time');
 

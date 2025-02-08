@@ -6,18 +6,18 @@ use InvalidArgumentException;
 
 class ArgumentHandler
 {
-    private string $baseRoute = '/';
-
     public function getXmlPartialDir(): string
     {
         $xmlPartialDir = getenv('INPUT_XML_PARTIAL_DIR');
 
         if (isset($xmlPartialDir)) {
-            $dirName = $this->baseRoute . ltrim($xmlPartialDir, '/');
+            $dirName = realpath($xmlPartialDir);
 
             if (is_dir($dirName)) {
                 return $dirName;
             }
+
+            $dirName = $xmlPartialDir;
 
             throw new InvalidArgumentException("Directory ($dirName) not found, please create it first");
         }
@@ -52,11 +52,13 @@ class ArgumentHandler
         $junitXmlReportDir = getenv('INPUT_JUNIT_XML_REPORT_DIR');
 
         if (isset($junitXmlReportDir)) {
-            $dirName = $this->baseRoute . ltrim($junitXmlReportDir, '/');
+            $dirName = realpath($junitXmlReportDir);
 
             if (is_dir($dirName)) {
                 return $dirName;
             }
+
+            $dirName = $junitXmlReportDir;
 
             throw new InvalidArgumentException("Directory ($dirName) not found, please create it first");
         }
