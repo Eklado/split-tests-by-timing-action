@@ -25,9 +25,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: version number
-      run: echo "version: 1.0.2"
-      shell: bash
     - env:
         INPUT_XML_PARTIAL_DIR: ${{ inputs.xml-partial-dir }}
         INPUT_NODE_INDEX: ${{ inputs.node-index }}
@@ -36,5 +33,7 @@ runs:
         INPUT_TEST_DIRECTORIES: ${{ inputs.test-directories }}
         INPUT_DEBUG: ${{ inputs.debug }}
         BASE_PATH: ${{ github.workspace }}
-      run: php ${{ github.action_path }}/phpunit-xml-splitter.php
+      run: |
+          php echo "version: 1.0.2"
+          php ${{ github.action_path }}/phpunit-xml-splitter.php
       shell: bash
