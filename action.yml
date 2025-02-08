@@ -25,7 +25,9 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "version: 1.0.2"
+    - name: version number
+      run: echo "version: 1.0.2"
+      shell: bash
     - env:
         INPUT_XML_PARTIAL_DIR: ${{ inputs.xml-partial-dir }}
         INPUT_NODE_INDEX: ${{ inputs.node-index }}
