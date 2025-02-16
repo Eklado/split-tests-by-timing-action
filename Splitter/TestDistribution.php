@@ -50,19 +50,18 @@ class TestDistribution
 
     private function addNewTests (array &$testFileResults): void
     {
-        $unitTests = $this->getTestFiles('Unit');
-        $featureTests = $this->getTestFiles('Feature');
-
-        foreach (array_merge($unitTests, $featureTests) as $testFile) {
-            if (!isset($testFileResults[$testFile])) {
-                $testFileResults[$testFile] = 1;
+        foreach ($this->argumentHandler->getTestDirectories() as $testDirectory) {
+            foreach ($this->getTestFiles($testDirectory) as $testFile) {
+                if (!isset($testFileResults[$testFile])) {
+                    $testFileResults[$testFile] = 1;
+                }
             }
         }
     }
 
     private function getTestFiles (string $directoryName): array
     {
-        $directory = new \RecursiveDirectoryIterator($this->routePrefix . 'tests/' . $directoryName);
+        $directory = new \RecursiveDirectoryIterator($this->routePrefix . $directoryName);
         $iterator = new \RecursiveIteratorIterator($directory);
         $files = [];
 
