@@ -32,7 +32,7 @@ class TestDistribution
             echo PHP_EOL . "------------------" . PHP_EOL . PHP_EOL;
         }
 
-        $this->addNewTests($testFileResults);
+        $this->prepareTestFiles($testFileResults);
         $nodeTotal = $this->argumentHandler->getNodeTotal();
         $nodeIndex = $this->argumentHandler->getNodeIndex();
 
@@ -48,14 +48,23 @@ class TestDistribution
         }
     }
 
-    private function addNewTests (array &$testFileResults): void
+    private function prepareTestFiles (array &$testFileResults): void
     {
+        $oldFiles = $testFileResults;
+
         foreach ($this->argumentHandler->getTestDirectories() as $testDirectory) {
             foreach ($this->getTestFiles($testDirectory) as $testFile) {
+                unset($oldFiles[$testFile]);
+
                 if (!isset($testFileResults[$testFile])) {
                     $testFileResults[$testFile] = 1;
                 }
             }
+        }
+
+        // remove deleted files
+        foreach ($oldFiles as $oldFile => $time) {
+            unset($testFileResults[$oldFile]);
         }
     }
 
